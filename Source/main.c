@@ -1,17 +1,41 @@
 #include <gtk/gtk.h>
 #include <adwaita.h>
 
+struct log_click_event_data_t
+{
+  GtkWidget
+    *window,
+    *label
+  ;
+};
+
 static void
-log_click_event (GtkWidget *widget,
-                 gpointer window )
+log_click_event (GtkWidget * /*widget*/,
+                 gpointer data )
 {
   static int i = 0;
 
-  g_print("Button was clicked! (%d)\n\r", 1+i++);
+  struct log_click_event_data_t
+    *log_click_event_data;
+      
+  GtkWidget
+    *window,
+    *label;
+
+  GString
+    *label_text;
+
+  log_click_event_data = data;
+
+  window = log_click_event_data->window;
+  label = log_click_event_data->label;
+
+  label_text = g_string_new(NULL);
+  g_string_printf(label_text, "Press count : %d", ++i+1);
+
+  gtk_label_set_text ( GTK_LABEL (label), label_text->str );
 
   if (i > 14) {
-    g_print("I has reached 15, closing!\n\r");
-
     gtk_window_destroy( GTK_WINDOW (window) );
   }
 
@@ -19,13 +43,18 @@ log_click_event (GtkWidget *widget,
 
 static void
 activate (GtkApplication *app,
-          gpointer        user_data)
+          gpointer        /*user_data*/)
 {
   GtkWidget
     *window,
     *box,
+    *label,
     *button
   ;
+
+  GString *press_count_label_text;
+
+  press_count_label_text = g_string_new ( "Press count : 1" );
 
   window = gtk_application_window_new (app);
   gtk_window_set_title (GTK_WINDOW (window), "Window");
@@ -36,13 +65,23 @@ activate (GtkApplication *app,
   gtk_widget_set_halign (box, GTK_ALIGN_CENTER);
   gtk_widget_set_valign (box, GTK_ALIGN_CENTER);
 
+  button = gtk_button_new_with_label ( "Press me!" );
+  gtk_box_append( GTK_BOX (box), button);
+
+  label = gtk_label_new ( press_count_label_text->str );
+  gtk_widget_set_halign (box, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign (box, GTK_ALIGN_CENTER);
+  gtk_box_append( GTK_BOX (box), label);
+  
   gtk_window_set_child ( GTK_WINDOW (window), box );
 
-  button = gtk_button_new_with_label ( "Press me!" );
+  static struct log_click_event_data_t
+  log_click_event_data[1];
 
-  g_signal_connect ( button, "clicked", G_CALLBACK (log_click_event), window );
+  log_click_event_data->label  = label;
+  log_click_event_data->window = window;
 
-  gtk_box_append( GTK_BOX (box), button);
+  g_signal_connect ( button, "clicked", G_CALLBACK (log_click_event), log_click_event_data);
 
   gtk_window_present ( GTK_WINDOW (window) );
 }
@@ -54,7 +93,7 @@ main (int    argc,
   g_autoptr (AdwApplication) app = NULL;
   int status;
 
-  app = adw_application_new ("uk.ginix.pheasant", G_APPLICATION_FLAGS_NONE);
+  app = adw_application_new ("uk.ginix.pheasant", G_APPLICATION_DEFAULT_FLAGS);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   status = g_application_run (G_APPLICATION (app), argc, argv);
 

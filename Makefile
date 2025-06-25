@@ -3,7 +3,7 @@
 INCLUDES := gtk4 libadwaita-1
 
 CC       := gcc
-CFLAGS   := `pkg-config --cflags $(INCLUDES)` -O3 -Os -s -Ofast -march=native
+CFLAGS   := `pkg-config --cflags $(INCLUDES)` -O3 -Os -s -Ofast -march=native -Wall -Wextra -pedantic -Werror
 LDFLAGS  := `pkg-config --libs $(INCLUDES)`
 
 SRC_DIR  := Source/
