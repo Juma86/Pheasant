@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <adwaita.h>
 
 static void
 log_click_event (GtkWidget *widget,
@@ -50,13 +51,12 @@ int
 main (int    argc,
       char **argv)
 {
-  GtkApplication *app;
+  g_autoptr (AdwApplication) app = NULL;
   int status;
 
-  app = gtk_application_new ("uk.ginix.pheasant", G_APPLICATION_DEFAULT_FLAGS);
+  app = adw_application_new ("uk.ginix.pheasant", G_APPLICATION_FLAGS_NONE);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   status = g_application_run (G_APPLICATION (app), argc, argv);
-  g_object_unref (app);
 
   return status;
 }

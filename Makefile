@@ -1,6 +1,6 @@
 .PHONY: default log run build prepare clean
 
-INCLUDES := gtk4
+INCLUDES := gtk4 libadwaita-1
 
 CC       := gcc
 CFLAGS   := `pkg-config --cflags $(INCLUDES)` -O3 -Os -s -Ofast -march=native
