@@ -3,8 +3,8 @@
 INCLUDES := gtk4 libadwaita-1
 
 CC       := gcc
-CFLAGS   := `pkg-config --cflags $(INCLUDES)` -O3 -Os -s -Ofast -march=native -Wall -Wextra -pedantic -Werror
-LDFLAGS  := `pkg-config --libs $(INCLUDES)`
+CFLAGS   := -fsanitize=address -fno-omit-frame-pointer -g `pkg-config --cflags $(INCLUDES)` -Wall -Wextra -pedantic -Werror
+LDFLAGS  := -fsanitize=address -fno-omit-frame-pointer -g `pkg-config --libs $(INCLUDES)`
 
 SRC_DIR  := Source/
 OUT_DIR  := Bin/
