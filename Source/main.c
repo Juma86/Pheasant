@@ -7,10 +7,10 @@ log_click_event (GtkWidget *widget,
 {
   static int i = 0;
 
-  g_print("Button was clicked! (%d)\n\r", i++);
+  g_print("Button was clicked! (%d)\n\r", 1+i++);
 
   if (i > 14) {
-    g_print("I has exceeded 14, closing!\n\r");
+    g_print("I has reached 15, closing!\n\r");
 
     gtk_window_destroy( GTK_WINDOW (window) );
   }
